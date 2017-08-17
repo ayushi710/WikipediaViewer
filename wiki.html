@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wikipedia Viewer</title>
+    <script src="jquery-3.1.1.min.js"></script>
+    <style>
+        *
+        {
+            padding:0px;
+            margin:0px;
+            border:0px;
+        }
+
+        .container
+        {
+            position:relative;
+            padding:30px;
+        }
+        .title
+        {
+            font-size:60px;
+            text-align:center;
+            color:activeborder;
+            margin-top:80px;
+            margin-bottom:20px;
+            font-family:fantasy;
+
+        }
+        .image{
+            position: relative;
+            margin-left:50%;
+            top:-3px;
+            margin-bottom:20px;
+
+
+        }
+
+        .glass-body{
+            width: 50px;
+            height: 50px;
+            border: 4px solid grey;
+            background-color: #B3E5FC;
+            border-radius: 50%;
+        }
+        .glass-tip{
+            position: absolute;
+            top: 70px;
+            left: 35px;
+            height:0;
+            width: 50px;
+            border: 3px solid brown;
+            -webkit-transform: rotate(50deg);
+
+        }
+        body
+        {
+            background-color:#424242;
+            background: linear-gradient(30deg,#424242,#434343,#595959,#474747,#424242,#434343,#595959,#474747,#424242,#434343,#595959,#474747,#424242,#434343,#5b5b5b,#474747,#424242,#434343,#595959,#474747,#424242,#434343,#595959,#474747);
+
+        }
+        .input_val
+        {
+            outline:none;
+            padding:8px;
+            font-size:20px;
+            text-align:left;
+            border:2px solid #00ACC1;
+            font-family:fantasy;
+            margin-top:20px;
+            background-color: #B2EBF2;
+            width: 350px;
+            box-shadow:4px 6px 7px rgba(0,0,0,0.2) inset;
+        }
+        .button
+        {
+            outline:none;
+            padding:8px;
+            font-size:20px;
+            border:1px solid #f1f1f1;
+            background-color: #0097A7;
+            color:white;
+            font-family:fantasy;
+        }
+        .input
+        {
+            text-align:center;
+            margin-top:40px;
+
+        }
+        .random{
+            text-decoration: none;
+            border:1px solid #f1f1f1;
+            padding:8px;
+            font-size:20px;
+            background-color: #0097A7;
+            color:white;
+            position:absolute;
+            margin-top:20px;
+            outline:none;
+
+        }
+        ul
+        {
+            margin:40px;
+            background-color:#80DEEA;
+            background: linear-gradient(30deg,#90CAF9,#3da2f4,#6db9f7,#90CAF9,#BBDEFB,#7cc0f8,#46a6f5,#68b7f7,#90CAF9,#BBDEFB,#90CAF9,#3da2f4);
+            padding:0px;
+            list-style-type:none;
+            padding:32px;
+            visibility:hidden;
+        }
+
+        li
+        {
+
+            width:300px;
+            text-align:center;
+            margin-bottom:20px;
+            background-color:#01579B;
+            text-decoration:none;
+            padding:10px;
+            font-size:20px;
+            color: white;
+            transition:width 800ms;
+
+        }
+
+        a
+        {
+            text-decoration:none;
+            font-family: fantasy;
+            color:white;
+        }
+        .credits
+        {
+            text-align:center;
+            font-family:fantasy;
+            font-size:20px;
+            color:#F57C00;
+            margin-top:100px;
+        }
+        li:hover
+        {
+            background-color: #1A237E;
+            width : 95%;
+        }
+        .button:hover,.random:hover{
+            background-color:#006064;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">
+        WIKIPEDIA &nbsp SEARCH
+
+    </div>
+    <div class="image">
+
+        <div class="glass-body"></div>
+        <div class="glass-tip"></div>
+
+    </div>
+    <div class="input">
+
+        <input type="text" placeholder="Search Wikipedia.."class="input_val"/>
+        <input type="button" value="Search" class="button"/>&nbsp
+        <a href="https://en.wikipedia.org/wiki/Special:Random" class="random" target="_blank">Random Article</a>&nbsp
+
+    </div>
+    <div>
+        <ul class="values">
+
+        </ul>
+    </div>
+    <footer class="credits">
+        Designed & Coded By :
+        <br>Ayushi Mittal
+    </footer>
+
+</div>
+</body>
+<script >
+    $(document).ready(function(){
+
+
+
+        $(".button").on("click",function(){
+            var search_term = $(".input_val").val();
+            console.log(search_term);
+            var url = "https://en.wikipedia.org/w/api.php?action=opensearch&search="+encodeURIComponent(search_term)+"&format=json&callback=?";
+            $.ajax({
+                url: url,
+                type: 'GET',
+                contentType: "application/json; charset=urf-8",
+                async: false,
+                dataType: 'json',
+                success: function(data){
+                    var html="";
+                    for(var i = 0; i<data[1].length;i++)
+                    {
+                        html += "<li><a href='"+data[3][i]+"' target='_blank'>"+data[1][i]+"</a></li>";
+                        $(".values").html(html);
+                    }
+                }
+            })
+
+                .done(function(){
+                    console.log("success");
+                })
+                .fail(function(){
+                    console.log("fail");
+                })
+                .always(function(){
+                    console.log('done');
+                })
+            console.log(url);
+            setTimeout(function(){$(".values").css("visibility","visible");},500);
+        })
+    })
+</script>
+</html>
